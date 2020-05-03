@@ -37,8 +37,8 @@ package ANSI with Pure is
       Light_Cyan,
       Light_Grey);
 
-   function Reset_Attributes return String;
-   --  Back to defaults. Applies to colors & effects.
+   Reset : constant String;
+   --  Back to defaults. Applies to colors & styles.
 
    function Foreground (Color : Colors) return String;
    function Background (Color : Colors) return String;
@@ -157,5 +157,167 @@ private
 
    function Img (I : Natural) return String is
      (Tail (I'Img));
+
+   ------------
+   -- COLORS --
+   ------------
+
+   Reset : constant String := CSI & "0m";
+   --  Back to defaults. Applies to colors & styles.
+
+   function Foreground (Color : Colors) return String is
+     (CSI
+      & (case Color is
+          when Black         => "30",
+          when Red           => "31",
+          when Green         => "32",
+          when Yellow        => "33",
+          when Blue          => "34",
+          when Magenta       => "35",
+          when Cyan          => "36",
+          when Grey          => "37",
+          when Light_Black   => "90",
+          when Light_Red     => "91",
+          when Light_Green   => "92",
+          when Light_Yellow  => "93",
+          when Light_Blue    => "94",
+          when Light_Magenta => "95",
+          when Light_Cyan    => "96",
+          when Light_Grey    => "97")
+      & "m");
+   function Background (Color : Colors) return String is
+     (CSI
+      & (case Color is
+          when Black         => "40",
+          when Red           => "41",
+          when Green         => "42",
+          when Yellow        => "43",
+          when Blue          => "44",
+          when Magenta       => "45",
+          when Cyan          => "46",
+          when Grey          => "47",
+          when Light_Black   => "100",
+          when Light_Red     => "101",
+          when Light_Green   => "102",
+          when Light_Yellow  => "103",
+          when Light_Blue    => "104",
+          when Light_Magenta => "105",
+          when Light_Cyan    => "106",
+          when Light_Grey    => "107")
+      & "m");
+
+   function Bit8 (R, G, B : Palette_RGB) return String is
+     (Img (16 + 36 * R + 6 * G + B));
+
+   Fg : constant String := "38";
+   Bg : constant String := "48";
+
+   function Palette_Fg (R, G, B : Palette_RGB) return String is
+      (CSI & Fg & ";5;" & Bit8 (R, G, B) & "m");
+   function Palette_Bg (R, G, B : Palette_RGB) return String is
+      (CSI & Bg & ";5;" & Bit8 (R, G, B) & "m");
+
+   function Foreground (Level : Grayscale) return String is
+      (CSI & Fg & ";5;" & Img (232 + Level) & "m");
+   function Background (Level : Grayscale) return String is
+      (CSI & Bg & ";5;" & Img (232 + Level) & "m");
+
+   function Foreground (R, G, B : True_RGB) return String is
+      (CSI & Fg & ";2;" & Img (R) & ";" & Img (G) & ";" & Img (B) & "m");
+   function Background (R, G, B : True_RGB) return String is
+      (CSI & Bg & ";2;" & Img (R) & ";" & Img (G) & ";" & Img (B) & "m");
+
+   Default_Foreground : constant String := CSI & "39m";
+   Default_Background : constant String := CSI & "49m";
+
+   function Color_Wrap (Text       : String;
+                        Foreground : String := "";
+                        Background : String := "")
+                        return String is
+     ((if Foreground /= "" then Foreground else "")
+      & (if Background /= "" then Background else "")
+      & Text
+      & (if Background /= "" then Default_Background else "")
+      & (if Foreground /= "" then Default_Foreground else ""));
+
+   ------------
+   -- STYLES --
+   ------------
+
+   function Style (Style : Styles; Active : States := On) return String is
+     (CSI
+      & (case Active is
+            when On  =>
+           (case Style is
+               when Bright           => "1",
+               when Dim              => "2",
+               when Italic           => "3",
+               when Underline        => "4",
+               when Blink            => "5",
+               when Rapid_Blink      => "6",
+               when Invert           => "7",
+               when Conceal          => "8",
+               when Strike           => "9",
+               when Fraktur          => "20",
+               when Double_Underline => "21"
+           ),
+            when Off =>
+           (case Style is
+               when Bright           => "22",
+               when Dim              => "22",
+               when Italic           => "23",
+               when Underline        => "24",
+               when Blink            => "25",
+               when Rapid_Blink      => "25",
+               when Invert           => "27",
+               when Conceal          => "28",
+               when Strike           => "29",
+               when Fraktur          => "23",
+               when Double_Underline => "24"
+           ))
+      & "m");
+
+   function Style_Wrap (Text  : String;
+                        Style : Styles) return String is
+     (ANSI.Style (Style, On)
+      & Text
+      & ANSI.Style (Style, Off));
+
+
+   ------------
+   -- CURSOR --
+   ------------
+
+   function Back    (Cells : Positive := 1) return String;
+   function Down    (Lines : Positive := 1) return String;
+   function Forward (Cells : Positive := 1) return String;
+   function Up      (Lines : Positive := 1) return String;
+
+   function Next     (Lines : Positive := 1) return String;
+   function Previous (Lines : Positive := 1) return String;
+
+   function Horizontal (Column : Positive := 1) return String;
+
+   function Position (Row, Column : Positive := 1) return String;
+
+   Store     : constant String;
+   Restore   : constant String;
+
+   Hide      : constant String;
+   Show      : constant String;
+
+   --------------
+   -- CLEARING --
+   --------------
+
+   Clear_Screen : constant String;
+
+   Clear_To_Beginning_Of_Screen : constant String;
+   Clear_To_End_Of_Screen       : constant String;
+
+   Clear_Line : constant String;
+
+   Clear_To_Beginning_Of_Line : constant String;
+   Clear_To_End_Of_Line       : constant String;
 
 end ANSI;
