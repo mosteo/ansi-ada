@@ -97,4 +97,30 @@ begin
       Put_Line
         (Style_Wrap ("This text is using the " & Style'Img & " style", Style));
    end loop;
+
+   Title ("CURSOR POSITIONING TEST");
+   Put ("Storing cursor position...");
+   Put_Line (Store);
+   for I in 1 .. 4 loop
+      Put_Line ((1 .. 20 => 'X'));
+   end loop;
+   Put (Scroll_Up (4));
+   Put_Line ("Scrolled up 4 lines");
+   Put (Restore);
+   Put ("Restored cursor (should be aligned with 'Storing...' end column)");
+   Put (Up (Lines => 8));
+   Put (Horizontal (Column => 10));
+   delay 1.0;
+   Put (Clear_To_End_Of_Line);
+   Put (Down);
+   delay 1.0;
+   Put (Clear_To_Beginning_Of_Line);
+   Put (Down (Lines => 7));
+   Put (Horizontal); -- Back to first position of last line
+   Put (Store);
+   Put (Position (4, 1));
+   Put_Line ("Absolute positioning test to top-left");
+   Put (Restore);
+   New_Line;
+   Put_Line ("Test ended, check the text at top-left");
 end ANSI.Demo;

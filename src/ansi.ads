@@ -114,7 +114,7 @@ package ANSI with Pure is
    --  Move to the beginning of the next/prev lines. Not in ansi.sys
 
    function Horizontal (Column : Positive := 1) return String;
-   --  Move to a certain column. Not in ansy.sys
+   --  Move to a certain absolute column. Not in ansy.sys
 
    function Position (Row, Column : Positive := 1) return String;
    --  1, 1 is top-left
