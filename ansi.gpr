@@ -11,6 +11,7 @@ project ANSI is
    case Build_Mode is
       when "On_Demand" =>
          for Main use ("ansi-demo.adb");
+         for Exec_Dir use "bin";
          for Object_Dir use "obj";
 
       when "Static_Lib" =>

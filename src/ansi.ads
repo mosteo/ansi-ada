@@ -51,11 +51,11 @@ package ANSI with Pure is
    function Palette_Fg (R, G, B : Palette_RGB) return String;
    function Palette_Bg (R, G, B : Palette_RGB) return String;
 
-   subtype Grayscale is Natural range 0 .. 23;
+   subtype Greyscale is Natural range 0 .. 23;
    --  Drawn from the same palette mode. 0 is black, 23 is white
 
-   function Foreground (Level : Grayscale) return String;
-   function Background (Level : Grayscale) return String;
+   function Foreground (Level : Greyscale) return String;
+   function Background (Level : Greyscale) return String;
 
    subtype True_RGB is Natural range 0 .. 255;
    --  Modern terminals support true 24-bit RGB color
@@ -77,7 +77,8 @@ package ANSI with Pure is
    ------------
 
    type Styles is
-     (Bright,      -- aka Bold
+     (Default,     -- equivalent to Default_Foreground/Background
+      Bright,      -- aka Bold
       Dim,         -- aka Faint
       Italic,
       Underline,
@@ -131,7 +132,9 @@ package ANSI with Pure is
    -- CLEARING --
    --------------
 
-   Clear_Screen : constant String;
+   Clear_Screen            : constant String;
+   Clear_Screen_And_Buffer : constant String;
+   --  Clear also the backscroll buffer
 
    Clear_To_Beginning_Of_Screen : constant String;
    Clear_To_End_Of_Screen       : constant String;
@@ -142,6 +145,11 @@ package ANSI with Pure is
 
    Clear_To_Beginning_Of_Line : constant String;
    Clear_To_End_Of_Line       : constant String;
+
+   function Scroll_Up   (Lines : Positive) return String;
+   --  Adds lines at bottom
+   function Scroll_Down (Lines : Positive) return String;
+   --  Adds lines at top
 
 private
 
@@ -217,9 +225,9 @@ private
    function Palette_Bg (R, G, B : Palette_RGB) return String is
       (CSI & Bg & ";5;" & Bit8 (R, G, B) & "m");
 
-   function Foreground (Level : Grayscale) return String is
+   function Foreground (Level : Greyscale) return String is
       (CSI & Fg & ";5;" & Img (232 + Level) & "m");
-   function Background (Level : Grayscale) return String is
+   function Background (Level : Greyscale) return String is
       (CSI & Bg & ";5;" & Img (232 + Level) & "m");
 
    function Foreground (R, G, B : True_RGB) return String is
@@ -249,6 +257,7 @@ private
       & (case Active is
             when On  =>
            (case Style is
+               when Default          => "39",
                when Bright           => "1",
                when Dim              => "2",
                when Italic           => "3",
@@ -263,6 +272,7 @@ private
            ),
             when Off =>
            (case Style is
+               when Default          => "49",
                when Bright           => "22",
                when Dim              => "22",
                when Italic           => "23",
@@ -288,36 +298,54 @@ private
    -- CURSOR --
    ------------
 
-   function Back    (Cells : Positive := 1) return String;
-   function Down    (Lines : Positive := 1) return String;
-   function Forward (Cells : Positive := 1) return String;
-   function Up      (Lines : Positive := 1) return String;
+   function Cursor (N : Positive; Code : Character) return String is
+     (CSI & Img (N) & Code) with Inline_Always;
+   --  For common Cursor sequences
 
-   function Next     (Lines : Positive := 1) return String;
-   function Previous (Lines : Positive := 1) return String;
+   function Back    (Cells : Positive := 1) return String is
+     (Cursor (Cells, 'D'));
+   function Down    (Lines : Positive := 1) return String is
+     (Cursor (Lines, 'B'));
+   function Forward (Cells : Positive := 1) return String is
+     (Cursor (Cells, 'C'));
+   function Up      (Lines : Positive := 1) return String is
+     (Cursor (Lines, 'A'));
 
-   function Horizontal (Column : Positive := 1) return String;
+   function Next     (Lines : Positive := 1) return String is
+     (Cursor (Lines, 'E'));
+   function Previous (Lines : Positive := 1) return String is
+     (Cursor (Lines, 'F'));
 
-   function Position (Row, Column : Positive := 1) return String;
+   function Horizontal (Column : Positive := 1) return String is
+     (Cursor (Column, 'G'));
 
-   Store     : constant String;
-   Restore   : constant String;
+   function Position (Row, Column : Positive := 1) return String is
+     (CSI & Img (Row) & ";" & Img (Column) & "H");
 
-   Hide      : constant String;
-   Show      : constant String;
+   Store     : constant String := CSI & "s";
+   Restore   : constant String := CSI & "u";
+
+   Hide      : constant String := CSI & "?25l";
+   Show      : constant String := CSI & "?25h";
 
    --------------
    -- CLEARING --
    --------------
 
-   Clear_Screen : constant String;
+   Clear_Screen            : constant String := CSI & "2J";
+   Clear_Screen_And_Buffer : constant String := CSI & "3J";
 
-   Clear_To_Beginning_Of_Screen : constant String;
-   Clear_To_End_Of_Screen       : constant String;
+   Clear_To_Beginning_Of_Screen : constant String := CSI & "2J";
+   Clear_To_End_Of_Screen       : constant String := CSI & "0J";
 
-   Clear_Line : constant String;
+   Clear_Line : constant String := CSI & "2K";
 
-   Clear_To_Beginning_Of_Line : constant String;
-   Clear_To_End_Of_Line       : constant String;
+   Clear_To_Beginning_Of_Line : constant String := CSI & "1K";
+   Clear_To_End_Of_Line       : constant String := CSI & "0K";
+
+   function Scroll_Up   (Lines : Positive) return String is
+     (CSI & Img (Lines) & "S");
+   function Scroll_Down (Lines : Positive) return String is
+     (CSI & Img (Lines) & "T");
 
 end ANSI;
