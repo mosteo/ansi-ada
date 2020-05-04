@@ -70,7 +70,8 @@ package ANSI with Pure is
                         Foreground : String := "";
                         Background : String := "")
                         return String;
-   --  Wraps text between opening color and closing Defaults
+   --  Wraps text between opening color and closing Defaults. See the combo
+   --  color+styles below.
 
    ------------
    -- STYLES --
@@ -97,6 +98,11 @@ package ANSI with Pure is
                         Style : Styles) return String;
    --  Wraps Text in the given style between On/Off sequences
 
+   function Wrap (Text : String;
+                  Style      : Styles;
+                  Foreground : String := "";
+                  Background : String := "")
+                  return String;
 
    ------------
    -- CURSOR --
@@ -293,6 +299,15 @@ private
       & Text
       & ANSI.Style (Style, Off));
 
+   function Wrap (Text       : String;
+                  Style      : Styles;
+                  Foreground : String := "";
+                  Background : String := "")
+                  return String is
+     (Style_Wrap (Style => Style,
+                  Text  => Color_Wrap (Text       => Text,
+                                       Foreground => Foreground,
+                                       Background => Background)));
 
    ------------
    -- CURSOR --
