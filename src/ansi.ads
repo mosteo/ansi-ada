@@ -16,7 +16,9 @@ package ANSI with Pure is
    -----------
 
    type Colors is
-     (Black,
+     (Default, -- Implementation defined according to ANSI
+
+      Black,
       Red,
       Green,
       Yellow,
@@ -182,42 +184,44 @@ private
    function Foreground (Color : Colors) return String is
      (CSI
       & (case Color is
-          when Black         => "30",
-          when Red           => "31",
-          when Green         => "32",
-          when Yellow        => "33",
-          when Blue          => "34",
-          when Magenta       => "35",
-          when Cyan          => "36",
-          when Grey          => "37",
-          when Light_Black   => "90",
-          when Light_Red     => "91",
-          when Light_Green   => "92",
-          when Light_Yellow  => "93",
-          when Light_Blue    => "94",
-          when Light_Magenta => "95",
-          when Light_Cyan    => "96",
-          when Light_Grey    => "97")
+            when Default       => "39",
+            when Black         => "30",
+            when Red           => "31",
+            when Green         => "32",
+            when Yellow        => "33",
+            when Blue          => "34",
+            when Magenta       => "35",
+            when Cyan          => "36",
+            when Grey          => "37",
+            when Light_Black   => "90",
+            when Light_Red     => "91",
+            when Light_Green   => "92",
+            when Light_Yellow  => "93",
+            when Light_Blue    => "94",
+            when Light_Magenta => "95",
+            when Light_Cyan    => "96",
+            when Light_Grey    => "97")
       & "m");
    function Background (Color : Colors) return String is
      (CSI
       & (case Color is
-          when Black         => "40",
-          when Red           => "41",
-          when Green         => "42",
-          when Yellow        => "43",
-          when Blue          => "44",
-          when Magenta       => "45",
-          when Cyan          => "46",
-          when Grey          => "47",
-          when Light_Black   => "100",
-          when Light_Red     => "101",
-          when Light_Green   => "102",
-          when Light_Yellow  => "103",
-          when Light_Blue    => "104",
-          when Light_Magenta => "105",
-          when Light_Cyan    => "106",
-          when Light_Grey    => "107")
+            when Default       => "49",
+            when Black         => "40",
+            when Red           => "41",
+            when Green         => "42",
+            when Yellow        => "43",
+            when Blue          => "44",
+            when Magenta       => "45",
+            when Cyan          => "46",
+            when Grey          => "47",
+            when Light_Black   => "100",
+            when Light_Red     => "101",
+            when Light_Green   => "102",
+            when Light_Yellow  => "103",
+            when Light_Blue    => "104",
+            when Light_Magenta => "105",
+            when Light_Cyan    => "106",
+            when Light_Grey    => "107")
       & "m");
 
    function Bit8 (R, G, B : Palette_RGB) return String is
