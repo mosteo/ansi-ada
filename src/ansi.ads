@@ -1,9 +1,9 @@
 package ANSI with Pure is
 
    Reset_All : constant String;
-   -- Resets the device to its original state. This may include (if
-   -- applicable): reset graphic rendition, clear tabulation stops, reset
-   -- to default font, and more.
+   --  Resets the device to its original state. This may include (if
+   --  applicable): reset graphic rendition, clear tabulation stops, reset
+   --  to default font, and more.
 
    type States is (Off, On);
 
