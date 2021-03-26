@@ -1,0 +1,10 @@
+name = "ansiada"
+description = "ANSI escape sequences"
+version = "0.2-dev"
+
+licenses = "MIT"
+authors = ["Alejandro R. Mosteo"]
+maintainers = ["Alejandro R. Mosteo <alejandro@mosteo.com>"]
+maintainers-logins = ["mosteo"]
+
+project-files = ["ansi.gpr"]
