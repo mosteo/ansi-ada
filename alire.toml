@@ -7,4 +7,6 @@ authors = ["Alejandro R. Mosteo"]
 maintainers = ["Alejandro R. Mosteo <alejandro@mosteo.com>"]
 maintainers-logins = ["mosteo"]
 
+tags = ["ansi", "terminal"]
+
 project-files = ["ansi.gpr"]
