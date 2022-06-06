@@ -34,9 +34,17 @@ project ANSI is
    end Builder;
 
    package Compiler is
-      for Switches ("ada") use
-        ("-gnatVa", "-gnatwa", "-g", "-O2",
-         "-gnata", "-gnato", "-fstack-check");
+      for Switches ("Ada") use
+         ("-gnatwa",   --  All warnings
+          "-gnatVa",   --  All validity checks
+          "-gnata",    --  Assertions and contracts
+          "-gnato",    --  Overflow checks
+          "-O2",       --  Optimize
+          "-g",        --  Debug symbols
+          "-gnatn",    --  Enable inlining
+          "-gnatw.X",  --  Disable warnings for No_Exception_Propagation
+          "-ffunction-sections", --  Separate ELF section for each function
+          "-fdata-sections");    --  Separate ELF section for each data
    end Compiler;
 
    package Binder is
