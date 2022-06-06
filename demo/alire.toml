@@ -1,0 +1,11 @@
+name = "demo"
+description = "Shiny new project"
+version = "0.1.0-dev"
+
+executables = ["demo"]
+
+[[depends-on]]
+ansiada = "~0.1.1"
+
+[[pins]]
+ansiada = { path='../../ansi-ada' }

@@ -1,6 +1,8 @@
 with Ada.Text_IO; use Ada.Text_IO;
 
-procedure ANSI.Demo is
+with ANSI; use ANSI;
+
+procedure Demo is
    function Pad (S : String; Len : Positive) return String is
      (S & (1 .. Len - S'Length => ' '));
 
@@ -28,7 +30,8 @@ begin
 
    Title ("PALETTE COLOR TEST (subsample)");
    declare
-      Palette : constant array (Positive range <>) of Palette_RGB := (0, 1, 3, 5);
+      Palette : constant array (Positive range <>) of Palette_RGB :=
+        (0, 1, 3, 5);
    begin
       for R of Palette loop
          for G of Palette loop
@@ -36,9 +39,10 @@ begin
                for BR of Palette loop
                   for BG of Palette loop
                      for BB of Palette loop
-                        Put (Color_Wrap (Text       => "X",
-                                         Foreground => Palette_Fg (R, G, B),
-                                         Background => Palette_Bg (BR, BG, BB)));
+                        Put (Color_Wrap
+                               (Text       => "X",
+                                Foreground => Palette_Fg (R, G, B),
+                                Background => Palette_Bg (BR, BG, BB)));
                      end loop;
                   end loop;
                end loop;
@@ -68,9 +72,10 @@ begin
                for BR of Palette loop
                   for BG of Palette loop
                      for BB of Palette loop
-                        Put (Color_Wrap (Text       => "X",
-                                         Foreground => Foreground (R, G, B),
-                                         Background => Background (BR, BG, BB)));
+                        Put (Color_Wrap
+                               (Text       => "X",
+                                Foreground => Foreground (R, G, B),
+                                Background => Background (BR, BG, BB)));
                      end loop;
                   end loop;
                end loop;
@@ -123,4 +128,4 @@ begin
    Put (Restore);
    New_Line;
    Put_Line ("Test ended, check the text at top-left");
-end ANSI.Demo;
+end Demo;
