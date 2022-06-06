@@ -1,6 +1,6 @@
 with Ada.Text_IO; use Ada.Text_IO;
 
-with ANSI; use ANSI;
+with AnsiAda; use AnsiAda;
 
 procedure Demo is
    function Pad (S : String; Len : Positive) return String is

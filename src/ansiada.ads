@@ -1,4 +1,4 @@
-package ANSI with Pure is
+package AnsiAda with Pure is
 
    Reset_All : constant String;
    --  Resets the device to its original state. This may include (if
@@ -299,9 +299,9 @@ private
 
    function Style_Wrap (Text  : String;
                         Style : Styles) return String is
-     (ANSI.Style (Style, On)
+     (AnsiAda.Style (Style, On)
       & Text
-      & ANSI.Style (Style, Off));
+      & AnsiAda.Style (Style, Off));
 
    function Wrap (Text       : String;
                   Style      : Styles;
@@ -367,4 +367,4 @@ private
    function Scroll_Down (Lines : Positive) return String is
      (CSI & Img (Lines) & "T");
 
-end ANSI;
+end AnsiAda;
