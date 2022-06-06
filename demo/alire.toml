@@ -1,0 +1,11 @@
+name = "demo"
+description = "Ansiada demo"
+version = "0.1.0-dev"
+
+executables = ["demo"]
+
+[[depends-on]]
+ansiada = "*"
+
+[[pins]]
+ansiada = { path='..' }
