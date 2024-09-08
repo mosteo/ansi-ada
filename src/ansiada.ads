@@ -7,6 +7,9 @@ package AnsiAda with Pure is
 
    type States is (Off, On);
 
+   function Scrub (Sequence : String) return String;
+   --  Remove all ANSI formatting from a string;
+
    function Shorten (Sequence : String) return String is (Sequence);
    --  Some consecutive commands can be combined, resulting in a shorter
    --  string. Currently does nothing, but included for future optimization.
@@ -366,5 +369,34 @@ private
      (CSI & Img (Lines) & "S");
    function Scroll_Down (Lines : Positive) return String is
      (CSI & Img (Lines) & "T");
+
+   -----------
+   -- Scrub --
+   -----------
+
+   function Scrub (Clean    : String;
+                   Dirty    : String;
+                   Cleaning : Boolean := False)
+                   return String
+   is (if Dirty = ""
+       then Clean
+       else
+         (if Cleaning and then Dirty (Dirty'First) /= 'm' then
+               Scrub (Clean, Dirty (Dirty'First + 1 .. Dirty'Last), True)
+          elsif Cleaning and then Dirty (Dirty'First) = 'm' then
+               Scrub (Clean, Dirty (Dirty'First + 1 .. Dirty'Last), False)
+          elsif not Cleaning and then Dirty (Dirty'First) = ESC then
+               Scrub (Clean, Dirty (Dirty'First + 1 .. Dirty'Last), True)
+          elsif not Cleaning and then Dirty (Dirty'First) /= ESC then
+               Scrub (Clean & Dirty (Dirty'First),
+                      Dirty (Dirty'First + 1 .. Dirty'Last), False)
+          else
+             raise Program_Error with "Unexpected state while scrubbing with "
+          & "clean=" & Clean
+          & " dirty=" & Dirty
+          & " cleaning=" & Cleaning'Image));
+
+   function Scrub (Sequence : String) return String
+   is (Scrub ("", Sequence));
 
 end AnsiAda;
