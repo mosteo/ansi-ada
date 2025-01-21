@@ -4,6 +4,9 @@ version = "0.1.0-dev"
 
 executables = ["demo"]
 
+[build-profiles]
+"*" = "validation"
+
 [[depends-on]]
 ansiada = "*"
 
